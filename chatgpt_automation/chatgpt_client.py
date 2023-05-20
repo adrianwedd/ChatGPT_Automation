@@ -33,6 +33,7 @@ class ChatGPT_Client:
     wait_cq     = 'text-2xl'
     reset_xq    = '//a[text()="New chat"]'
     regen_xq    = '//div[text()="Regenerate response"]'
+    gpt_xq    = '//span[text()="{}"]'
 
     def __init__(
         self,
@@ -273,6 +274,25 @@ class ChatGPT_Client:
         except Exceptions.NoSuchElementException:
             logging.error('Regenerate button is not present')
         return answer
+    
+    def switch_model(self, model_name : str):
+        '''
+        Switch the model for ChatGPT+ users.
+
+        Args:
+            model_name: str = The name of the model, either GPT-3.5 or GPT-4
+
+        Returns:
+            bool: True on success, False on fail
+        '''
+        if model_name in ['GPT-3.5', 'GPT-4']:
+            logging.info(f'Switching model to {model_name}')
+            try:
+                self.browser.find_element(By.XPATH, self.gpt_xq.format(model_name)).click()
+                return True
+            except Exceptions.NoSuchElementException:
+                logging.error('Button is not present')
+        return False
 
 if __name__ == '__main__':
     import argparse
